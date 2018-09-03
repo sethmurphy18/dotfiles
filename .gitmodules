@@ -1,6 +1,0 @@
-[submodule "refind-theme"]
-	path = refind-theme
-	url = https://github.com/EvanPurkhiser/rEFInd-minimal
-[submodule "sddm-theme"]
-	path = sddm-theme
-	url = https://github.com/Eayu/sddm-theme-clairvoyance
