@@ -1,0 +1,181 @@
+[bar/top]
+width = 100%
+height = 25
+bottom = false
+padding-left = 5
+padding-right = 5
+
+background = #CC282A2B
+foreground = #FFFFFF
+
+font-0 = Source Sans Pro:style=Regular:size=10;1
+font-1 = FontAwesome:fontformat=truetype:size=9;1
+font-2 = siji:pixelsize=10;0
+
+wm-name = topbar
+enable-ipc = true
+
+modules-left = bspwm
+modules-center = date
+modules-right = battery volume network powermenu
+
+[module/network]
+type = internal/network
+interface = wlo1
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 3.0
+
+; Test connectivity every Nth update
+; A value of 0 disables the feature
+; NOTE: Experimental (needs more testing)
+; Default: 0
+;ping-interval = 3
+
+; @deprecated: Define min width using token specifiers (%downspeed:min% and %upspeed:min%)
+; Minimum output width of upload/download rate
+; Default: 3
+udspeed-minwidth = 5
+
+; Accumulate values from all interfaces
+; when querying for up/downspeed rate
+; Default: false
+accumulate-stats = true
+
+; Consider an `UNKNOWN` interface state as up.
+; Some devices have an unknown state, even when they're running
+; Default: false
+unknown-as-up = true
+
+[module/date]
+type = internal/date
+
+; Seconds to sleep between updates
+interval = 1.0
+
+; See "man date" for details on how to format the date string
+; NOTE: if you want to use syntax tags here you need to use %%{...}
+date = %a %b %d, 
+
+; Optional time format
+time = %H:%M
+
+; if `date-alt` or `time-alt` is defined, clicking
+; the module will toggle between formats
+date-alt = %A, %d %B %Y
+time-alt = %H:%M:%S
+
+label = %date% %time%
+format =    <label>
+;format-background = #ddffffff
+format-background = #CC282A2B
+;format-foreground = #333
+format-padding = 3
+
+[module/song]
+type = custom/script
+exec = mpc | head -1
+interval = 2
+click-left = mpc toggle
+
+[module/bspwm]
+type = internal/bspwm
+format = <label-state> <label-mode>
+
+ws-icon-0 = web;
+ws-icon-1 = term;
+ws-icon-2 = chat;
+ws-icon-3 = code;
+ws-icon-4 = music;
+ws-icon-default = 
+
+label-visible-underline = #FFFFFF
+label-focused = %icon%
+label-focused-foreground = #C52A2B
+label-focued-underline = #C52A2B
+label-focused-padding = 2
+
+label-occupied = %icon%
+label-occupied-foreground = #FFFFFF
+label-occupied-padding = 2
+
+label-empty = %icon%
+label-empty-foreground = #44FFFFFF
+label-empty-padding = 2
+
+[module/battery]
+type = internal/battery
+
+full-at = 99
+
+battery = BAT0
+adapter = AC0
+
+poll-interval = 5
+
+format-charging = <animation-charging>  <label-charging>
+format-discharging = <ramp-capacity>  <label-discharging>
+format-full = <ramp-capacity>  <label-full>
+label-charging = %percentage%
+label-discharging = %percentage%
+label-full = %percentage%
+format-charging-padding = 3
+format-discharging-padding = 3
+format-full-padding = 3
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-framerate = 750
+
+[module/volume]
+type = internal/volume
+
+format-volume = <ramp-volume>  <label-volume>
+format-muted = <label-muted>
+label-volume = %percentage%
+label-muted =   muted
+label-muted-foreground = #aaa
+format-volume-padding = 3
+format-muted-padding = 3
+
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+ramp-headphones-0 = 
+
+[module/powermenu]
+type = custom/menu
+
+label-open =   
+;label-open-background = #dd0000
+;label-open-foreground = #fff
+label-close = cancel
+;label-close-background = #dd0000
+;label-close-foreground = #fff
+label-open-padding = 4 
+label-close-padding = 3 
+
+menu-0-0 = reboot
+menu-0-0-exec = menu-open-1
+menu-0-1 = power off
+menu-0-1-exec = menu-open-2
+menu-0-0-padding = 3
+menu-0-1-padding = 3
+
+menu-1-0 = reboot?  
+menu-1-0-exec = sudo reboot
+menu-1-0-padding = 3
+
+menu-2-0 = power off?  
+menu-2-0-exec = sudo poweroff
+menu-2-0-padding = 3
