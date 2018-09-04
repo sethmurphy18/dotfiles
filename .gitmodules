@@ -1,3 +1,6 @@
 [submodule "zsh/.zsh/oh-my-zsh"]
 	path = zsh/.zsh/oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh
+[submodule "ulauncher/.config/ulauncher/user-themes/Arc-Dark-for-Ulauncher"]
+	path = ulauncher/.config/ulauncher/user-themes/Arc-Dark-for-Ulauncher
+	url = git@github.com:philberndt/Arc-Dark-for-Ulauncher

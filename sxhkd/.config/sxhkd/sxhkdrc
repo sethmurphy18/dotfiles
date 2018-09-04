@@ -1,51 +1,139 @@
-###
-# WM Independent Hotkeys
-###
+########################################################################################
+########################################################################################
+### Just a super quick note, you will notice ALOT of my hotkeys are duplicated. This ###
+### is because I switch between my laptop's internal keyboard and an external        ###
+### mechanical keyboard. Before anyone complains, yes I know they don't line up with ###
+### the function keys, but I didn't design HP's keyboard, so it's not my fault.      ###
+########################################################################################
+########################################################################################
+
+##############################
+### WM Independent Hotkeys ###
+##############################
 
 # Terminal emulator
+# i3 style shortcut
 super + Return
 	termite
 
 # Program launcher
-super + m
-	rofi -fullscreen -show run
+# Yes, I use a GTK launcher, so sue me
+super + Space
+	ulauncher
 
-# Make sxhkd reload its configuration files
+# Reload sxhkd
 super + Escape
 	pkill -USR1 -x sxhkd
 
 
-###
-# Custom Scripts
-###
+###############################
+### Various Custom Keybinds ###
+###############################
 
 # Lock
 super + BackSpace
-	~/.bin/lock
+	i3lock-fancy -p -- scrot -z
 
 # Take Screenshot and save it
 Print
 	scrot ~/Pictures/Screenshots/%d-%b-%Y%H%M%S.png
 
-super + Up
-	~/.bin/volume-up
+#####################################################################################
+### Volume Controls                                                               ###
+### Credit: https://github.com/zachasme/dotfiles/blob/master/config/sxhkd/sxhkdrc ###
+#####################################################################################
 
-super + Down
-	~/.bin/volume-down
+# Volume up
+# NOTE: If the audio is muted, it will also turn it on
+super + F8
+	amixer -q set Master 5%+ on
 
-super + Right
-	mpc next > /dev/null
+# Volume down
+# NOTE: Will not mute
+super + F7
+	amixer -q set Master 5%-
 
-super + Left
-	mpc prev > /dev/null
+# Mute audio
+# NOTE: Will not toggle mute
+super + F6
+	amixer -q set Master off
 
-super + p
-	mpc toggle > /dev/null
+# Repeating Media controls for the XF86 keys
+# Raise volume
+# note: also ensures audio is enabled
+XF86AudioRaiseVolume
+	amixer -q set Master 5%+ on
+
+# Lower volume
+# note: intentionally does not unmute
+XF86AudioLowerVolume
+	amixer -q set Master 5%-
+
+# Mute audio
+# note: mute always sets audio off (intentially no toggle)
+XF86AudioMute
+	amixer -q set Master off
 
 
-###
-# BSPWM Hotkeys
-###
+################################################
+### Media Controls                           ###
+### NOTE: Requires playerctl to be isntalled ###
+################################################
+
+# F key version
+# Next track
+super + F11
+	playerctl next
+
+# Previous track
+super + F9
+	playerctl previous
+
+# Toggle play/pause
+super + F10
+	playerctl play-pause
+
+# XF86 Version
+# Next track
+XF86AudioNext
+	playerctl next
+
+# Previous track
+XF86AudioPrev
+	playerctl previous
+
+# Toggle play/pause
+XF86AudioPlay
+	playerctl play-pause
+
+
+#####################################################################################
+### Brightness Controls                                                           ###
+### Credit: https://github.com/zachasme/dotfiles/blob/master/config/sxhkd/sxhkdrc ###
+#####################################################################################
+
+# F key version
+# Raise monitor brightness
+super + F3
+  backlight +{20,1}%
+
+# Lower monitor brightness
+super + F2
+  backlight -{20,1}%
+
+# XF86 version
+# Raise monitor brightness
+XF86MonBrightnessUp
+  backlight +{20,1}%
+
+# Lower monitor brightness
+XF86MonBrightnessDown
+  backlight -{20,1}%
+
+
+#####################
+### BSPWM Hotkeys ###
+#####################
 
 # Quit BSPWM normally
 super + alt + Escape
@@ -56,7 +144,7 @@ super + {_, shift + }w
 	bspc node -{c, k}
 
 # alternate between the tiled and monocle layout
-super + space
+super + m
 	bspc desktop -l next
 
 # if the current node is automatic, send it to the last manual, otherwise pull the last leaf

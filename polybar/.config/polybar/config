@@ -1,88 +1,60 @@
 [bar/top]
+; Put the bar at the bottom of the screen
+bottom = false
+
+; Dimension defined as pixel value (e.g. 35) or percentage (e.g. 50%),
+; the percentage can optionally be extended with a pixel offset like so:
+; 50%:-10, this will result in a width or height of 50% minus 10 pixels
 width = 100%
 height = 25
-bottom = false
+
+; Background argb color (e.g. #f00, #ff992a, #ddff1023)
+background = #CC282A2B
+
+; Foreground argb color (e.g. #f00, #ff992a, #ddff1023)
+foreground = #FFF
+
+; Number of spaces to add at the beginning/end of the bar
+; Individual side values can be defined using:
+;   padding-{left,right}
 padding-left = 5
 padding-right = 5
 
-background = #CC282A2B
-foreground = #FFFFFF
+; Fonts are defined using <font-name>;<vertical-offset>
+; Font names are specified using a fontconfig pattern.
+;   font-0 = NotoSans-Regular:size=8;2
+;   font-1 = MaterialIcons:size=10
+;   font-2 = Termsynu:size=8;-1
+;   font-3 = FontAwesome:size=10
+; See the Fonts wiki page for more details
+font-0 = SourceSansPro:style=Regular;size=9;1
+font-1 = FontAwesome:fontformat=truetype;size=8;1
+font-2 = MaterialIcons:font-format=truetype;size=8;1
 
-font-0 = Source Sans Pro:style=Regular:size=10;1
-font-1 = FontAwesome:fontformat=truetype:size=9;1
-font-2 = siji:pixelsize=10;0
+; Modules are added to one of the available blocks
+;   modules-left = cpu ram
+;   modules-center = xwindow xbacklight
+;   modules-right = ipc clock
+modules-left = bspwm
+modules-center = title
+modules-right = battery volume date
 
+; Value to be used to set the WM_NAME atom
+; If the value is empty or undefined, the atom value
+; will be created from the following template: polybar-[BAR]_[MONITOR]
+; NOTE: The placeholders are not available for custom values
 wm-name = topbar
+
+; Enable support for inter-process messaging
+; See the Messaging wiki page for more details.
 enable-ipc = true
 
-modules-left = bspwm
-modules-center = date
-modules-right = battery volume network powermenu
-
-[module/network]
-type = internal/network
-interface = wlo1
-
-; Seconds to sleep between updates
-; Default: 1
-interval = 3.0
-
-; Test connectivity every Nth update
-; A value of 0 disables the feature
-; NOTE: Experimental (needs more testing)
-; Default: 0
-;ping-interval = 3
-
-; @deprecated: Define min width using token specifiers (%downspeed:min% and %upspeed:min%)
-; Minimum output width of upload/download rate
-; Default: 3
-udspeed-minwidth = 5
-
-; Accumulate values from all interfaces
-; when querying for up/downspeed rate
-; Default: false
-accumulate-stats = true
-
-; Consider an `UNKNOWN` interface state as up.
-; Some devices have an unknown state, even when they're running
-; Default: false
-unknown-as-up = true
-
-[module/date]
-type = internal/date
-
-; Seconds to sleep between updates
-interval = 1.0
-
-; See "man date" for details on how to format the date string
-; NOTE: if you want to use syntax tags here you need to use %%{...}
-date = %a %b %d, 
-
-; Optional time format
-time = %H:%M
-
-; if `date-alt` or `time-alt` is defined, clicking
-; the module will toggle between formats
-date-alt = %A, %d %B %Y
-time-alt = %H:%M:%S
-
-label = %date% %time%
-format =    <label>
-;format-background = #ddffffff
-format-background = #CC282A2B
-;format-foreground = #333
-format-padding = 3
-
-[module/song]
-type = custom/script
-exec = mpc | head -1
-interval = 2
-click-left = mpc toggle
 
 [module/bspwm]
 type = internal/bspwm
-format = <label-state> <label-mode>
 
+; ws-icon-[0-9]+ = label;icon
+; Note that the label needs to correspond with the bspwm workspace name
 ws-icon-0 = web;
 ws-icon-1 = term;
 ws-icon-2 = chat;
@@ -90,92 +62,255 @@ ws-icon-3 = code;
 ws-icon-4 = music;
 ws-icon-default = 
 
-label-visible-underline = #FFFFFF
+; Available tags:
+;   <label-monitor>
+;   <label-state> - gets replaced with <label-(focused|urgent|occupied|empty)>
+;   <label-mode> - gets replaced with <label-(monocle|tiled|fullscreen|floating|locked|sticky|private)>
+; Default: <label-state>
+format = <label-state> <label-mode>
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
 label-focused = %icon%
 label-focused-foreground = #C52A2B
-label-focued-underline = #C52A2B
+label-focused-underline = #C52A2B
 label-focused-padding = 2
 
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
 label-occupied = %icon%
-label-occupied-foreground = #FFFFFF
+label-occupied-foreground = #FFF
 label-occupied-padding = 2
 
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
 label-empty = %icon%
 label-empty-foreground = #44FFFFFF
 label-empty-padding = 2
 
+
+[module/title]
+type = internal/xwindow
+
+; Available tags:
+;   <label> (default)
+format = <label>
+format-foreground = #FFF
+format-padding = 4
+
+; Available tokens:
+;   %title%
+; Default: %title%
+label = %title%
+label-maxlen = 200
+
+; Used instead of label when there is no window title
+; Available tokens:
+;   None
+label-empty = Empty
+label-empty-foreground = #FFF
+
+
+;[module/music]
+;type = internal/mpd
+;
+; Host where mpd is running (either ip or domain name)
+; Can also be the full path to a unix socket where mpd is running.
+;host = ~/.mpd/mpd.socket
+;
+; Available tags:
+;   <label-song> (default)
+;   <label-time>
+;   <bar-progress>
+;   <toggle> - gets replaced with <icon-(pause|play)>
+;   <toggle-stop> - gets replaced with <icon-(stop|play)>
+;   <icon-random>
+;   <icon-repeat>
+;   <icon-repeatone> (deprecated)
+;   <icon-single> - Toggle playing only a single song. Replaces <icon-repeatone>
+;   <icon-consume>
+;   <icon-prev>
+;   <icon-stop>
+;   <icon-play>
+;   <icon-pause>
+;   <icon-next>
+;   <icon-seekb>
+;   <icon-seekf>
+;format-online = <icon-prev> <toggle> <icon-next>  <label-song>
+;
+; Available tags:
+;   <label-offline>
+;format-offline = <label-offline>
+;
+; Available tokens:
+;   %artist%
+;   %album-artist%
+;   %album%
+;   %date%
+;   %title%
+; Default: %artist% - %title%
+;label-song = %artist% - %title%
+;
+; Available tokens:
+;   None
+;label-offline =  No music playing
+;
+; Only applies if <icon-X> is used
+;icon-play = 
+;icon-pause = 
+;icon-prev = 
+;icon-next = 
+
+
 [module/battery]
 type = internal/battery
 
+; This is useful in case the battery never reports 100% charge
 full-at = 99
 
+; Use the following command to list batteries and adapters:
+; $ ls -1 /sys/class/power_supply/
 battery = BAT0
-adapter = AC0
+adapter = ACAD
 
+; If an inotify event haven't been reported in this many
+; seconds, manually poll for new values.
+;
+; Needed as a fallback for systems that don't report events
+; on sysfs/procfs.
+;
+; Disable polling by setting the interval to 0.
+;
+; Default: 5
 poll-interval = 5
 
-format-charging = <animation-charging>  <label-charging>
-format-discharging = <ramp-capacity>  <label-discharging>
-format-full = <ramp-capacity>  <label-full>
-label-charging = %percentage%
-label-discharging = %percentage%
-label-full = %percentage%
-format-charging-padding = 3
-format-discharging-padding = 3
-format-full-padding = 3
+; Available tags:
+;   <label-charging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-charging>
+format-charging = <animation-charging> <label-charging>
 
+; Available tags:
+;   <label-discharging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-discharging>
+format-discharging = <ramp-capacity> <label-discharging>
+
+; Available tags:
+;   <label-full> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+format-full = <ramp-capacity> <label-full>
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;   %consumption% (shows current charge rate in watts)
+label-charging = %percentage%%
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;   %consumption% (shows current discharge rate in watts)
+label-discharging = %percentage%%
+
+; Available tokens:
+;   %percentage% (default)
+label-full = %percentage%%
+
+; Only applies if <ramp-capacity> is used
 ramp-capacity-0 = 
 ramp-capacity-1 = 
 ramp-capacity-2 = 
 ramp-capacity-3 = 
 ramp-capacity-4 = 
 
+; Only applies if <animation-charging> is used
 animation-charging-0 = 
 animation-charging-1 = 
 animation-charging-2 = 
 animation-charging-3 = 
 animation-charging-4 = 
+; Framerate in milliseconds
 animation-charging-framerate = 750
 
+
 [module/volume]
-type = internal/volume
+type = internal/alsa
 
-format-volume = <ramp-volume>  <label-volume>
+; Soundcard to be used
+; Usually in the format hw:# where # is the card number
+; You can find the different card numbers in `/proc/asound/cards`
+master-soundcard = default
+speaker-soundcard = default
+headphone-soundcard = default
+
+; Name of the master, speaker and headphone mixers
+; Use the following command to list available mixer controls:
+; $ amixer scontrols | sed -nr "s/.*'([[:alnum:]]+)'.*/\1/p"
+; If master, speaker or headphone-soundcard isn't the default, 
+; use `amixer -c # scontrols` instead where # is the number 
+; of the master, speaker or headphone soundcard respectively
+;
+; Default: Master
+master-mixer = Master
+
+; Available tags:
+;   <label-volume> (default)
+;   <ramp-volume>
+;   <bar-volume>
+format-volume = <ramp-volume> <label-volume>
+
+; Available tags:
+;   <label-muted> (default)
+;   <ramp-volume>
+;   <bar-volume>
 format-muted = <label-muted>
-label-volume = %percentage%
-label-muted =   muted
-label-muted-foreground = #aaa
-format-volume-padding = 3
-format-muted-padding = 3
 
-ramp-volume-0 = 
-ramp-volume-1 = 
-ramp-volume-2 = 
-ramp-headphones-0 = 
+; Available tokens:
+;   %percentage% (default)
+label-muted =  muted
+label-muted-foreground = #FFF
 
-[module/powermenu]
-type = custom/menu
+; Only applies if <ramp-volume> is used
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
 
-label-open =   
-;label-open-background = #dd0000
-;label-open-foreground = #fff
-label-close = cancel
-;label-close-background = #dd0000
-;label-close-foreground = #fff
-label-open-padding = 4 
-label-close-padding = 3 
 
-menu-0-0 = reboot
-menu-0-0-exec = menu-open-1
-menu-0-1 = power off
-menu-0-1-exec = menu-open-2
-menu-0-0-padding = 3
-menu-0-1-padding = 3
+[module/date]
+type = internal/date
 
-menu-1-0 = reboot?  
-menu-1-0-exec = sudo reboot
-menu-1-0-padding = 3
+; Seconds to sleep between updates
+interval = 1.0
 
-menu-2-0 = power off?  
-menu-2-0-exec = sudo poweroff
-menu-2-0-padding = 3
+; See "http://en.cppreference.com/w/cpp/io/manip/put_time" for details on how to format the date string
+; NOTE: if you want to use syntax tags here you need to use %%{...}
+date = %a, %b %e, %Y,
+
+; Optional time format
+time = %r
+
+; Available tags:
+;   <label> (default)
+format =   <label>
+format-foreground = #FFF
+
+; Available tokens:
+;   %date%
+;   %time%
+; Default: %date%
+label = %date% %time%
+label-font = 0
+label-foreground = #FFF

@@ -1,16 +1,10 @@
 #! /bin/sh
 
-# Merge XDefaults
-xrdb -merge ~/.Xdefaults
-
 # Set the xcursor name
 xsetroot -cursor_name left_ptr
 
 # Start compton with the appropriate config
 compton --config ~/.config/conmpton.conf -b
-
-# Start mpd
-mpd &
 
 # Start polybar
 polybar top &
@@ -19,7 +13,8 @@ polybar top &
 feh --bg-fill "/home/seth/Pictures/wallpaper.png"
 
 # Start conky
-conky &
+# Working on a conky config
+# conky &
 
 # Start sxhkd
 sxhkd &
@@ -28,13 +23,13 @@ sxhkd &
 bspc monitor -d web term chat code music
 
 # Define bspwm window settings
-bspc config border_width		0
+bspc config border_width		2
 bspc config normal_border_color		"#282A2B"
 bspc config focused_border_color	"#C52A2B"
 bspc config window_gap			15
 
 # Define various bspwm settings
-bspc config split_ratio 		0.52
+bspc config split_ratio 		0.50
 bspc config borderless_monocle		true
 bspc config gapless_monocle		true
 bspc config focus_by_distance		true
@@ -50,4 +45,3 @@ bspc config top_padding			30
 bspc config bottom_padding		0
 bspc config left_padding		0
 bspc config right_padding		0
-
