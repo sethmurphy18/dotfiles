@@ -18,8 +18,9 @@ super + Return
 
 # Program launcher
 # Yes, I use a GTK launcher, so sue me
-super + Space
-	ulauncher
+# Actually GTK launcer ain't working so well atm...very VERY slow
+super + m
+	/bin/ulauncher
 
 # Reload sxhkd
 super + Escape
@@ -44,35 +45,29 @@ Print
 #####################################################################################
 
 # Volume up
-# NOTE: If the audio is muted, it will also turn it on
 super + F8
-	amixer -q set Master 5%+ on
+	$HOME/.bin/volume-up
 
 # Volume down
-# NOTE: Will not mute
 super + F7
-	amixer -q set Master 5%-
+	pactl set-sink-volume 0 -5%
 
 # Mute audio
-# NOTE: Will not toggle mute
 super + F6
-	amixer -q set Master off
+	pactl set-sink-mute 0 toggle
 
 # Repeating Media controls for the XF86 keys
 # Raise volume
-# note: also ensures audio is enabled
 XF86AudioRaiseVolume
-	amixer -q set Master 5%+ on
+	$HOME/.bin/volume-up
 
 # Lower volume
-# note: intentionally does not unmute
 XF86AudioLowerVolume
-	amixer -q set Master 5%-
+	pactl set-sink-volume 0 -5%
 
 # Mute audio
-# note: mute always sets audio off (intentially no toggle)
 XF86AudioMute
-	amixer -q set Master off
+	pactl set-sink-mute 0 toggle
 
 
 ################################################
@@ -83,28 +78,28 @@ XF86AudioMute
 # F key version
 # Next track
 super + F11
-	playerctl next
+	playerctl --all-players next
 
 # Previous track
 super + F9
-	playerctl previous
+	playerctl --all-players previous
 
 # Toggle play/pause
 super + F10
-	playerctl play-pause
+	playerctl --all-players play-pause
 
 # XF86 Version
 # Next track
 XF86AudioNext
-	playerctl next
+	playerctl --all-players next
 
 # Previous track
 XF86AudioPrev
-	playerctl previous
+	playerctl --all-players previous
 
 # Toggle play/pause
 XF86AudioPlay
-	playerctl play-pause
+	playerctl --all-players play-pause
 
 
 #####################################################################################
@@ -144,7 +139,7 @@ super + {_, shift + }w
 	bspc node -{c, k}
 
 # alternate between the tiled and monocle layout
-super + m
+super + Space
 	bspc desktop -l next
 
 # if the current node is automatic, send it to the last manual, otherwise pull the last leaf

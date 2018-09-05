@@ -6,37 +6,44 @@ bottom = false
 ; the percentage can optionally be extended with a pixel offset like so:
 ; 50%:-10, this will result in a width or height of 50% minus 10 pixels
 width = 100%
-height = 25
+height = 35
 
 ; Background argb color (e.g. #f00, #ff992a, #ddff1023)
-background = #CC282A2B
+background = #5A000000
 
 ; Foreground argb color (e.g. #f00, #ff992a, #ddff1023)
-foreground = #FFF
+foreground = #EEE
+
+underline-size = 2
+underline-color = #C52A2B
 
 ; Number of spaces to add at the beginning/end of the bar
 ; Individual side values can be defined using:
 ;   padding-{left,right}
-padding-left = 5
-padding-right = 5
+padding-left = 0
+padding-right = 0
+spacing = 1
+module-margin-left = 0
+module-margin-right = 0
 
 ; Fonts are defined using <font-name>;<vertical-offset>
 ; Font names are specified using a fontconfig pattern.
-;   font-0 = NotoSans-Regular:size=8;2
+;   font-0 = NotoSans-Regu:size=13;2
 ;   font-1 = MaterialIcons:size=10
 ;   font-2 = Termsynu:size=8;-1
-;   font-3 = FontAwesome:size=10
+;   font-3 = FontAwesome:size=10;
 ; See the Fonts wiki page for more details
-font-0 = SourceSansPro:style=Regular;size=9;1
-font-1 = FontAwesome:fontformat=truetype;size=8;1
-font-2 = MaterialIcons:font-format=truetype;size=8;1
+font-0 = Source Sans Pro:pixelsize=10;0
+font-1 = FontAwesome:size=10;0
+font-2 = WunconSiji:pixelsize=10;0
+font-3 = MaterialIcons:pixelsize=10;0
 
 ; Modules are added to one of the available blocks
 ;   modules-left = cpu ram
 ;   modules-center = xwindow xbacklight
 ;   modules-right = ipc clock
-modules-left = bspwm
-modules-center = title
+modules-left = bspwm title
+modules-center =
 modules-right = battery volume date
 
 ; Value to be used to set the WM_NAME atom
@@ -48,6 +55,11 @@ wm-name = topbar
 ; Enable support for inter-process messaging
 ; See the Messaging wiki page for more details.
 enable-ipc = true
+
+; Various settings relating to bspwm
+wm-restack = bspwm
+scroll-up = bspwm-desknext
+scroll-down = bspwm-deskprev
 
 
 [module/bspwm]
@@ -75,9 +87,10 @@ format = <label-state> <label-mode>
 ;   %index%
 ; Default: %icon%  %name%
 label-focused = %icon%
+label-focused-background = #88000000
 label-focused-foreground = #C52A2B
-label-focused-underline = #C52A2B
-label-focused-padding = 2
+label-focused-underline= #C52A2B
+label-focused-padding = 4
 
 ; Available tokens:
 ;   %name%
@@ -85,8 +98,16 @@ label-focused-padding = 2
 ;   %index%
 ; Default: %icon%  %name%
 label-occupied = %icon%
-label-occupied-foreground = #FFF
-label-occupied-padding = 2
+label-occupied-foreground = #AAC52A2B
+label-occupied-padding = 4
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+label-urgent = %icon%
+label-urgen-padding = 4
 
 ; Available tokens:
 ;   %name%
@@ -95,7 +116,7 @@ label-occupied-padding = 2
 ; Default: %icon%  %name%
 label-empty = %icon%
 label-empty-foreground = #44FFFFFF
-label-empty-padding = 2
+label-empty-padding = 4
 
 
 [module/title]
@@ -118,6 +139,8 @@ label-maxlen = 200
 ;   None
 label-empty = Empty
 label-empty-foreground = #FFF
+
+label-padding = 4
 
 
 ;[module/music]
@@ -247,24 +270,19 @@ animation-charging-framerate = 750
 
 
 [module/volume]
-type = internal/alsa
+type = internal/pulseaudio
 
-; Soundcard to be used
-; Usually in the format hw:# where # is the card number
-; You can find the different card numbers in `/proc/asound/cards`
-master-soundcard = default
-speaker-soundcard = default
-headphone-soundcard = default
+; Sink to be used, if it exists (find using `pacmd list-sinks`, name field)
+; If not, uses default sink
+sink = alsa_output.pci-0000_00_1b.0.analog-stereo
 
-; Name of the master, speaker and headphone mixers
-; Use the following command to list available mixer controls:
-; $ amixer scontrols | sed -nr "s/.*'([[:alnum:]]+)'.*/\1/p"
-; If master, speaker or headphone-soundcard isn't the default, 
-; use `amixer -c # scontrols` instead where # is the number 
-; of the master, speaker or headphone soundcard respectively
-;
-; Default: Master
-master-mixer = Master
+; Use PA_VOLUME_UI_MAX (~153%) if true, or PA_VOLUME_NORM (100%) if false
+; Default: true
+use-ui-max = true
+
+; Interval for volume increase/decrease (in percent points) (unreleased)
+; Default: 5
+interval = 5
 
 ; Available tags:
 ;   <label-volume> (default)
@@ -288,6 +306,9 @@ ramp-volume-0 = 
 ramp-volume-1 = 
 ramp-volume-2 = 
 
+format-volume-padding = 3
+format-muted-padding = 3
+
 
 [module/date]
 type = internal/date
@@ -297,10 +318,10 @@ interval = 1.0
 
 ; See "http://en.cppreference.com/w/cpp/io/manip/put_time" for details on how to format the date string
 ; NOTE: if you want to use syntax tags here you need to use %%{...}
-date = %a, %b %e, %Y,
+date = %a %b %d,
 
 ; Optional time format
-time = %r
+time = %H:%M
 
 ; Available tags:
 ;   <label> (default)
@@ -312,5 +333,14 @@ format-foreground = #FFF
 ;   %time%
 ; Default: %date%
 label = %date% %time%
-label-font = 0
+label-font = 1
 label-foreground = #FFF
+
+format-padding = 3
+
+
+[module/padding]
+type = custom/text
+content = 	 
+content-foreground = #00000000
+content-background = #55000000
